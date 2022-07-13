@@ -1,0 +1,50 @@
+@page "/information"
+
+@inject NavigationManager nave
+
+<EditForm Model="@pr" OnValidSubmit="@finish">
+@* <EditForm Model="@pr">   *@
+    <DataAnnotationsValidator/>
+    <ValidationSummary />
+    <p>
+        <label>FirstName: </label>
+        <InputText @bind-Value="pr.FirstName" />
+    </p>
+
+    <p>
+        <label>LastName: </label>
+        <InputText @bind-Value="pr.LastName" />
+    </p>
+
+    <p>
+        <label>Adress: </label>
+        <InputText @bind-Value="pr.Adress" />
+    </p>
+
+    <p>
+        <label>Number of clothes you chosed: </label>
+        <InputNumber @bind-Value="pr.Number"></InputNumber>
+    </p>
+
+    @* <p>
+        <label>Date: </label>
+        <input type="date" @bind="pr.Date" @bind:format="yyyy-mm-dd"  />
+        <InputDate @bind-Value="pr.Date" />
+    </p> *@
+    <button type="submit">submit</button>    
+    
+</EditForm>
+
+@code 
+{
+    private Info pr=new Info();
+
+    private void finish()
+    {
+        nave.NavigateTo("/thanks");
+    }
+
+}
+
+
+

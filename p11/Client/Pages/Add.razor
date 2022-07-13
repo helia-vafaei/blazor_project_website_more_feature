@@ -1,0 +1,37 @@
+@page "/add"
+@inject HttpClient Client
+
+<EditForm Model="@pr" OnValidSubmit="@add">
+    <DataAnnotationsValidator/>
+    <ValidationSummary />
+    <p>
+        <label>Catagory: </label>
+        <InputText @bind-Value="pr.catagory" />
+    </p>
+
+    <p>
+        <label>Color: </label>
+        <InputText @bind-Value="pr.color" />
+    </p>
+
+    <p>
+        <label>Price: </label>
+        <InputNumber @bind-Value="pr.price"></InputNumber>
+    </p>
+
+
+
+    <button type="submit">Add</button>    
+    
+</EditForm>
+@code 
+{
+    private kala pr=new kala();
+
+    private async Task add()
+    {
+        var URL = @"https://d99522347.herokuapp.com/api/Clothe/AddNewClotheToDB";
+        await Client.PostAsJsonAsync<kala>(URL,pr); 
+    }
+
+}

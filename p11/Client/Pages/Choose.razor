@@ -1,0 +1,136 @@
+@page "/"
+@using System.Text.Json
+@using System.Text
+@using Microsoft.AspNetCore.Components.WebAssembly
+@using System.Net
+@using Microsoft.AspNetCore.Components.WebAssembly
+@inject NavigationManager navi
+@inject HttpClient Client
+<table class="table table-bordered" >
+    <thead>
+        <tr>
+            <th>Number of clothes you chosed</th>
+            <th>Total cost</th>
+            <th>End of choosing</th>
+        </tr>
+    </thead>
+    <tbody> 
+        <tr>
+            <td>@Bala.count</td>
+            <td>@Bala.price</td>
+            <td><button class="btn btn-primary"@onclick="finishing">End</button></td>
+        </tr>
+    </tbody>  
+</table> 
+
+<table class="table table-bordered" >
+    <thead>
+        <tr>
+            <th>Catagory</th>
+            <th>Count</th>
+            <th>Price</th>
+            <th>Color</th>
+            <th>Add to cart</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Clothes != null)
+        {
+            @foreach (var c in Clothes)
+            {
+                <tr>
+                    <td>@c.catagory</td>
+                    <td>@c.ID</td>
+                    <td>@c.price</td>
+                    <td>@c.color</td>
+                    @if(@c.ID == 0)
+                    {
+                        <td><button disable class="btn btn-primary"@onclick=@(()=>addtocart(c))>Add</button></td>
+                        <td><button class="btn btn-primary"@onclick=@(()=>updating(c))>Update</button></td>
+                        @* <td>
+                            <a href='/update/@c.ID'>
+                            <i class="oi oi-reload"></i>
+                                Update
+                            </a>    
+                        </td> *@
+                        <td><button disable class="btn btn-primary"@onclick=@(()=>deleting(c))>Delete</button></td>
+                    }
+                    @if(@c.ID != 0)
+                    {
+                        <td><button class="btn btn-primary"@onclick=@(()=>addtocart(c))>Add</button></td>
+                        <td><button class="btn btn-primary"@onclick=@(()=>updating(c))>Update</button></td>
+                        @* <td>
+                            <a href='/update/@c.ID'>
+                            <i class="oi oi-reload"></i>
+                                Update
+                            </a>    
+                        </td> *@
+                        <td><button class="btn btn-primary"@onclick=@(()=>deleting(c))>Delete</button></td>
+                    }
+                </tr>
+                
+            }
+        }
+    </tbody>  
+</table> 
+<button class="btn btn-primary"@onclick="adding">Create new Clothe</button>
+<br>
+<br>
+<font size="5">Pressing the "Update" button, will increase the price of goods by 10000 Tomans</font>
+
+
+
+
+@code
+{
+    private void addtocart(kala k)
+    {
+        Bala.count++;
+        Bala.price=Bala.price+k.price;
+        _cart.carts.Add(k);
+    } 
+    private void adding()
+    {
+        navi.NavigateTo("/add");
+    }
+
+    public async Task deleting(kala ka)
+
+    {
+        int[] aa = new int[]{ka.ID} ;
+        var URLd = @"https://d99522347.herokuapp.com/api/Clothe/DeleteeClothe";
+        var request = new HttpRequestMessage(HttpMethod.Delete, URLd);
+        request.Content = new StringContent(JsonSerializer.Serialize(aa), Encoding.UTF8, "application/json");
+        await Client.SendAsync(request);
+        await OnInitializedAsync();
+    }
+    @* private void updating()
+    {
+        navi.NavigateTo("/update");
+    } *@
+    private void updating(kala k)
+    {
+        k.price+=10000;
+        var URL = @"https://d99522347.herokuapp.com/api/Clothe/UpdateClothe";
+        Client.PutAsJsonAsync<kala>(URL,k);
+    }
+    private void finishing()
+    {
+        navi.NavigateTo("/information");
+    }
+    public List<kala> Clothes {get; set;} 
+    protected override async Task OnInitializedAsync()
+    {
+        var URL = @"https://d99522347.herokuapp.com/api/Clothe/getAllClothes";
+        Clothes = await Client.GetFromJsonAsync<List<kala>>(URL);
+    }
+
+    @* public async Task addtodb()
+    {
+        var URL = @"http://localhost:5001/api/Clothe/AddNewClotheToDB";
+        await Client.PostAsJsonAsync<kala>(URL,array1);
+        await Client.PostAsJsonAsync<kala>(URL,array2);
+    } *@
+}                

@@ -1,0 +1,23 @@
+﻿@page "/cart"
+<table class="table table-bordered" >
+    <thead>
+        <tr>
+            <th>Catagory</th>
+            <th>FactorNumber</th>
+            <th>Color</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+
+            @foreach(var i in _cart.carts)
+            {
+                <tr>
+                    <td>@i.catagory</td>
+                    <td>@i.ID</td>
+                    <td>@i.color</td>
+                    <td>@i.price</td>
+                </tr>
+            }
+    </tbody> 
+</table>
